@@ -9,6 +9,8 @@ class SudokoBoard:
             self.load_state(initial_state)
 
     def load_state(self, state: str):
+        self.grid = [0] * 81
+        self.domains = [0b111111111] * 81
         s = state.strip().replace(".", "0").replace("\n", "").replace(" ", "")
 
         if len(s) != 81:
