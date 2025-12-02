@@ -88,5 +88,10 @@ class SudokoBoard:
 
         return self.domains[idx].bit_count()
 
+    def assign_value(self, r, c, value):
+        idx = self.get_idx(r, c)
+        self.grid[idx] = value
+        self.domains[idx] = (1 << (value - 1))
+
 
 SudokoBoard.compute_peers()
