@@ -65,5 +65,26 @@ class SudokoBoard:
 
         cls.peers = [list(p) for p in cls.peers]
 
+    def remove_value(self, r, c, value):
+        idx = self.get_idx(r, c)
+        mask = (1 << (value - 1))
+
+        if self.domains[idx] & mask:
+            self.domains[idx] &= ~mask
+            return True
+
+        return False
+
+    def copy(self):
+        newBoard = SudokoBoard()
+        newBoard.grid = self.grid[:]
+        newBoard.domains = self.domains[:]
+        return newBoard
+
+    def domain_size(self, r, c):
+        idx = self.get_idx(r, c)
+
+        return self.domains[idx].bit_count()
+
 
 SudokoBoard.compute_peers()
