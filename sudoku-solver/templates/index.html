@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sudoku Solver</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .player-controls { margin-top: 15px; display: none; }
+        .btn-control { background: #f39c12; color: white; padding: 8px 16px; margin: 0 5px; }
+        .btn-control:disabled { background: #ccc; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sudoku Solver <span class="badge">AI</span></h1>
+        
+        <div class="board-container" id="board"></div>
+
+        <div class="controls">
+            <input type="number" id="clues-count" class="difficulty-box" min="17" max="81" value="30" title="Number of filled cells">
+            <button onclick="fetchRandomBoard()" class="btn btn-success">Generate</button>
+            <button onclick="solveSudoku()" class="btn btn-primary">Solve (AI)</button>
+            <button onclick="clearBoard()" class="btn btn-secondary">Clear</button>
+        </div>
+        
+        <div class="player-controls" id="player-controls">
+            <button onclick="prevStep()" class="btn btn-control" id="btn-prev">❮ Prev</button>
+            <span id="step-counter" style="font-weight:bold; color:#2c3e50; margin: 0 10px;">0 / 0</span>
+            <button onclick="nextStep()" class="btn btn-control" id="btn-next">Next ❯</button>
+            <button onclick="playAll()" class="btn btn-control" style="background:#27ae60">Auto Play</button>
+        </div>
+
+        <p id="status-msg" class="status"></p>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
