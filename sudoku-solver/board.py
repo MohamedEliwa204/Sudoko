@@ -1,6 +1,15 @@
 import cell
 import copy
 import random
+
+# ANSI color codes for terminal output
+class Colors:
+    CYAN = '\033[96m'       # [Backtracking]
+    GREEN = '\033[92m'      # [Assignment]
+    YELLOW = '\033[93m'     # [Arc-Consistency]
+    MAGENTA = '\033[95m'    # [Initialization]
+    RED = '\033[91m'        # [Error], [Backtrack]
+    RESET = '\033[0m'       # Reset color
 class board : 
     cells : list[list[cell.cell]]
     def __init__(self) :
@@ -55,13 +64,13 @@ class board :
                 if self.cells[i][j].value != 0 :
                     self.cells[i][j].domain = [self.cells[i][j].value]
                 else : 
-                    print(f"[Initialization] Processing empty Cell[{i}][{j}] - Initial Domain: {self.cells[i][j].domain}")
+                    print(f"{Colors.MAGENTA}[Initialization]{Colors.RESET} Processing empty Cell[{i}][{j}] - Initial Domain: {self.cells[i][j].domain}")
                     for cell in self.neighbors(self.cells[i][j]) : 
                         self.cells[i][j].remove_value(cell.value)
                     if len(self.cells[i][j].domain) == 0 :
-                        print(f"[Initialization] ERROR: Cell[{i}][{j}] has empty domain!")
+                        print(f"{Colors.RED}[Initialization] ERROR: Cell[{i}][{j}] has empty domain!{Colors.RESET}")
                         return False
-                    print(f"[Initialization] Finished Cell[{i}][{j}] - Final Domain: {self.cells[i][j].domain}")
+                    print(f"{Colors.MAGENTA}[Initialization]{Colors.RESET} Finished Cell[{i}][{j}] - Final Domain: {self.cells[i][j].domain}")
         return True 
     def neighbors(self,cell) : 
         neighbors = set()
@@ -82,7 +91,7 @@ class board :
     def assign_value(self,cell,value):
         if not self.is_valid(cell.row, cell.col, value):
             return False
-        print(f"[Assignment] Cell[{cell.row}][{cell.col}] assigned value: {value}")
+        print(f"{Colors.GREEN}[Assignment]{Colors.RESET} Cell[{cell.row}][{cell.col}] assigned value: {value}")
         self.set_value(cell,value)
         for neighbor in self.neighbors(cell) : 
             if neighbor.value == 0:
@@ -106,12 +115,12 @@ class board :
         candidates = list(target_cell.domain)
         for value in candidates:
             if self.is_valid(target_cell.row, target_cell.col, value):
-                print(f"[Backtracking] Trying {value} at Cell[{target_cell.row}][{target_cell.col}] from domain {target_cell.domain}")
+                print(f"{Colors.CYAN}[Backtracking]{Colors.RESET} Trying {value} at Cell[{target_cell.row}][{target_cell.col}] from domain {target_cell.domain}")
                 backup = copy.deepcopy(self.cells)
                 if self.assign_value(target_cell, value):
                     if self.arc_constraints():
                         return True
-                print(f"[Backtrack] Failed {value} at Cell[{target_cell.row}][{target_cell.col}] -> Reverting")
+                print(f"{Colors.RED}[Backtrack] Failed {value} at Cell[{target_cell.row}][{target_cell.col}] -> Reverting{Colors.RESET}")
                 self.cells = backup
             target_cell = self.cells[target_cell.row][target_cell.col]
         return False
@@ -119,7 +128,7 @@ class board :
 def solve_puzzle(input_grid):
     game = board()
     if game.set_board(input_grid) == False:
-        print("[Error] Invalid Board Input")
+        print(f"{Colors.RED}[Error] Invalid Board Input{Colors.RESET}")
         return None
     print("\n-----Starting Solver Process -----")
     if game.arc_constraints():
