@@ -112,23 +112,19 @@ class board :
             target_cell = self.cells[target_cell.row][target_cell.col]
         return False
                                     
-board1 = board()
-world_hardest_board = [
-    [8, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 3, 6, 0, 0, 0, 0, 0],
-    [0, 7, 0, 0, 9, 0, 2, 0, 0],
-    [0, 5, 0, 0, 0, 7, 0, 0, 0],
-    [0, 0, 0, 0, 4, 5, 7, 0, 0],
-    [0, 0, 0, 1, 0, 0, 0, 3, 0],
-    [0, 0, 1, 0, 0, 0, 0, 6, 8],
-    [0, 0, 8, 5, 0, 0, 0, 1, 0],
-    [0, 9, 0, 0, 0, 0, 4, 0, 0]
-]
-board1.set_board(world_hardest_board)
-board1.arc_constraints()
-for i in range(9) : 
-    for j in range(9) : 
-        print(board1.cells[i][j].value,end=" ")
-    print()
+def solve_puzzle(input_grid):
+    game = board()
+    if game.set_board(input_grid) == False:
+        return None
+    if game.arc_constraints():
+        result = []
+        for i in range(9):
+            row = []
+            for j in range(9):
+                row.append(game.cells[i][j].value)
+            result.append(row)
+        return result
+    else:
+        return None
 
 

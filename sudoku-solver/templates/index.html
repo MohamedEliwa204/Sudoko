@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sudoku Solver</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>Sudoku Solver <span class="badge">AI</span></h1>
+        
+        <div class="board-container" id="board"></div>
+
+        <div class="controls">
+            <button onclick="solveSudoku()" class="btn btn-primary">Solve</button>
+            <button onclick="clearBoard()" class="btn btn-secondary">Clear</button>
+
+        </div>
+        
+        <p id="status-msg" class="status"></p>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
