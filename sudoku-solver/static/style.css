@@ -151,3 +151,8 @@ input:focus {
     from { opacity: 0; transform: scale(0.8); }
     to { opacity: 1; transform: scale(1); }
 }
+.invalid {
+    background-color: #ffcdd2 !important;
+    color: #c62828;
+    border-color: #c62828;
+}

@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify
-from board import solve_puzzle
+from board import solve_puzzle, generate_random_board
 app = Flask(__name__)
 
 @app.route('/')
@@ -20,6 +20,11 @@ def solve():
         return jsonify({'status': 'success', 'solution': solution})
     else:
         return jsonify({'status': 'error', 'message': 'Unsolvable Board or Invalid Input'})
+
+@app.route('/generate', methods=['GET'])
+def generate():
+    board = generate_random_board(difficulty=25)
+    return jsonify({'status': 'success', 'board': board})
 
 if __name__ == '__main__':
     app.run(debug=True)

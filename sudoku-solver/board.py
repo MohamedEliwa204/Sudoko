@@ -1,5 +1,6 @@
 import cell
 import copy
+import random
 class board : 
     cells : list[list[cell.cell]]
     def __init__(self) :
@@ -127,4 +128,28 @@ def solve_puzzle(input_grid):
     else:
         return None
 
+def generate_random_board(difficulty=20):
+    game = board()
+    
+    for k in range(0, 9, 3):
+        nums = list(range(1, 10))
+        random.shuffle(nums)
+        for i in range(3):
+            for j in range(3):
+                game.cells[k+i][k+j].value = nums.pop()
+                game.cells[k+i][k+j].domain = [game.cells[k+i][k+j].value]
 
+    game.intialize_domain()
+    game.arc_constraints()
+    
+    full_board = [[game.cells[i][j].value for j in range(9)] for i in range(9)]
+    
+    attempts = 81 - difficulty
+    while attempts > 0:
+        row = random.randint(0, 8)
+        col = random.randint(0, 8)
+        if full_board[row][col] != 0:
+            full_board[row][col] = 0
+            attempts -= 1
+            
+    return full_board
