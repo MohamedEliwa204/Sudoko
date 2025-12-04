@@ -23,7 +23,8 @@ def solve():
 
 @app.route('/generate', methods=['GET'])
 def generate():
-    board = generate_random_board(difficulty=25)
+    difficulty = request.args.get('difficulty', default=25, type=int)
+    board = generate_random_board(difficulty=difficulty)
     return jsonify({'status': 'success', 'board': board})
 
 if __name__ == '__main__':

@@ -11,6 +11,7 @@ class cell :
     def remove_value(self,value) : 
         if value in self.domain and len(self.domain) > 1: 
             self.domain.remove(value)
+            print(f"[Arc-Consistency] Cell[{self.row}][{self.col}]: Removed {value} -> New Domain: {self.domain}")
             return True 
         return False 
         

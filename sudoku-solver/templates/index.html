@@ -14,10 +14,10 @@
         <div class="board-container" id="board"></div>
 
         <div class="controls">
-            <button onclick="solveSudoku()" class="btn btn-primary">Solve</button>
+            <input type="number" id="clues-count" class="difficulty-box" min="17" max="81" value="30" title="Number of filled cells">
+            <button onclick="fetchRandomBoard()" class="btn btn-success">Generate</button>
+            <button onclick="solveSudoku()" class="btn btn-primary">Solve (AI)</button>
             <button onclick="clearBoard()" class="btn btn-secondary">Clear</button>
-            <button onclick="fetchRandomBoard()" class="btn btn-secondary" style="background-color: #27ae60;">Generate Random</button>
-
         </div>
         
         <p id="status-msg" class="status"></p>

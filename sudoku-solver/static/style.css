@@ -156,3 +156,17 @@ input:focus {
     color: #c62828;
     border-color: #c62828;
 }
+.difficulty-box {
+    padding: 10px;
+    margin: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    background-color: white;
+    cursor: pointer;
+    outline: none;
+}
+
+.difficulty-box:focus {
+    border-color: #007bff;
+}

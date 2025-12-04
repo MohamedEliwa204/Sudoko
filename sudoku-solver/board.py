@@ -82,6 +82,7 @@ class board :
     def assign_value(self,cell,value):
         if not self.is_valid(cell.row, cell.col, value):
             return False
+        print(f"[Assignment] Cell[{cell.row}][{cell.col}] assigned value: {value}")
         self.set_value(cell,value)
         for neighbor in self.neighbors(cell) : 
             if neighbor.value == 0:
@@ -105,10 +106,12 @@ class board :
         candidates = list(target_cell.domain)
         for value in candidates:
             if self.is_valid(target_cell.row, target_cell.col, value):
+                print(f"[Backtracking] Trying {value} at Cell[{target_cell.row}][{target_cell.col}]")
                 backup = copy.deepcopy(self.cells)
                 if self.assign_value(target_cell, value):
                     if self.arc_constraints():
                         return True
+                print(f"[Backtrack] Failed {value} at Cell[{target_cell.row}][{target_cell.col}] -> Reverting")
                 self.cells = backup
             target_cell = self.cells[target_cell.row][target_cell.col]
         return False
@@ -116,7 +119,9 @@ class board :
 def solve_puzzle(input_grid):
     game = board()
     if game.set_board(input_grid) == False:
+        print("[Error] Invalid Board Input")
         return None
+    print("\n-----Starting Solver Process -----")
     if game.arc_constraints():
         result = []
         for i in range(9):

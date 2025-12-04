@@ -4,7 +4,7 @@ const statusMsg = document.getElementById('status-msg');
 function createBoard() {
     for (let i = 0; i < 81; i++) {
         let input = document.createElement('input');
-        input.type = 'number';
+        input.type = 'text';
         input.maxLength = 1;
         input.dataset.index = i;
         
@@ -20,7 +20,7 @@ function createBoard() {
         });
 
         input.addEventListener('keydown', (e) => {
-            const inputs = document.querySelectorAll('input');
+            const inputs = boardElement.querySelectorAll('input');
             const currentIndex = Array.from(inputs).indexOf(e.target);
             const row = Math.floor(currentIndex / 9);
             const col = currentIndex % 9;
@@ -47,7 +47,7 @@ function createBoard() {
 }
 
 function validateInput(index, value) {
-    const inputs = document.querySelectorAll('input');
+    const inputs = boardElement.querySelectorAll('input');
     const row = Math.floor(index / 9);
     const col = index % 9;
     
@@ -75,7 +75,7 @@ function validateInput(index, value) {
 }
 
 function getBoardData() {
-    let inputs = document.querySelectorAll('input');
+    let inputs = boardElement.querySelectorAll('input');
     let grid = [];
     let row = [];
     
@@ -91,7 +91,7 @@ function getBoardData() {
 }
 
 function updateBoard(solution, originalGrid) {
-    let inputs = document.querySelectorAll('input');
+    let inputs = boardElement.querySelectorAll('input');
     inputs.forEach((input, index) => {
         let row = Math.floor(index / 9);
         let col = index % 9;
@@ -136,13 +136,17 @@ async function solveSudoku() {
 async function fetchRandomBoard() {
     clearBoard();
     statusMsg.innerText = 'Generating...';
-    
+    let clues = document.getElementById('clues-count').value;
+    if (clues < 17) clues = 17;
+    if (clues > 81) clues = 81;
+    document.getElementById('clues-count').value = clues;
+
     try {
-        const response = await fetch('/generate');
+        const response = await fetch(`/generate?difficulty=${clues}`);
         const data = await response.json();
         
         if (data.status === 'success') {
-            let inputs = document.querySelectorAll('input');
+            let inputs = boardElement.querySelectorAll('input');
             data.board.forEach((row, r) => {
                 row.forEach((val, c) => {
                     if (val !== 0) {
@@ -152,7 +156,7 @@ async function fetchRandomBoard() {
                     }
                 });
             });
-            statusMsg.innerText = 'Random Board Generated';
+            statusMsg.innerText = `Generated Board with ${clues} clues`;
             statusMsg.className = 'status';
         }
     } catch (error) {
@@ -162,7 +166,7 @@ async function fetchRandomBoard() {
 }
 
 function clearBoard() {
-    let inputs = document.querySelectorAll('input');
+    let inputs = boardElement.querySelectorAll('input');
     inputs.forEach(input => {
         input.value = '';
         input.classList.remove('user-input', 'solved-input', 'invalid');
