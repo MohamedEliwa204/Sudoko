@@ -3,7 +3,6 @@ import copy
 import random
 import time
 
-
 class Colors:
     CYAN = '\033[96m'
     GREEN = '\033[92m'
@@ -133,11 +132,9 @@ class board :
 
         self.set_value(cell,value)
 
-        # After assigning a value, run AC-3 to enforce arc consistency across the entire board
         if not self.ac3():
             return False
 
-        # After AC-3, check if any cells have singleton domains and assign them
         for i in range(9):
             for j in range(9):
                 if self.cells[i][j].value == 0 and len(self.cells[i][j].domain) == 1:
@@ -161,24 +158,28 @@ class board :
         candidates = list(target_cell.domain)
         for value in candidates:
             print(f"{Colors.CYAN}[Backtracking]{Colors.RESET} Trying {value} at Cell[{target_cell.row}][{target_cell.col}]")
+            
             backup = copy.deepcopy(self.cells)
 
-            # assign_value now runs AC-3 internally
             if self.assign_value(target_cell, value):
                 if self.arc_constraints():
                     return True
 
             print(f"{Colors.RED}[Backtrack] Failed {value} at Cell[{target_cell.row}][{target_cell.col}] -> Reverting{Colors.RESET}")
 
-            self.steps.append({
-                'row': target_cell.row,
-                'col': target_cell.col,
-                'value': 0,
-                'type': 'backtrack'
-            })
-
+            for r in range(9):
+                for c in range(9):
+                    if self.cells[r][c].value != backup[r][c].value:
+                        self.steps.append({
+                            'row': r, 
+                            'col': c, 
+                            'value': backup[r][c].value,
+                            'type': 'backtrack'
+                        })
+            
             self.cells = backup
             target_cell = self.cells[target_cell.row][target_cell.col]
+            
         return False
                                     
 def solve_puzzle(input_grid):
@@ -202,7 +203,7 @@ def solve_puzzle(input_grid):
                 row.append(game.cells[i][j].value)
             result.append(row)
         end_time = time.time()
-        print(f"{Colors.GREEN}[Success] Puzzle Solved in {end_time - start_time:.2f} seconds{Colors.RESET}")
+        print(f"{Colors.GREEN}[Success] Puzzle Solved in {end_time - start_time:.4f} seconds{Colors.RESET}")
         return result, game.steps
     else:
         return None, []
