@@ -124,7 +124,7 @@ class board :
     def assign_value(self,cell,value):
         if not self.is_valid(cell.row, cell.col, value):
             return False
-        
+
         print(f"{Colors.GREEN}[Assignment]{Colors.RESET} Cell[{cell.row}][{cell.col}] assigned value: {value}")
         self.steps.append({
             'row': cell.row, 
@@ -134,15 +134,17 @@ class board :
         })
 
         self.set_value(cell,value)
-        for neighbor in self.neighbors(cell) : 
-            if neighbor.value == 0:
-                if neighbor.remove_value(value):
-                    if len(neighbor.domain) == 0 :
-                        return False 
-                    if len(neighbor.domain) == 1 :
-                        if not self.assign_value(neighbor,neighbor.domain[0]):
-                            return False
-        return True 
+
+        if not self.ac3():
+            return False
+
+        for i in range(9):
+            for j in range(9):
+                if self.cells[i][j].value == 0 and len(self.cells[i][j].domain) == 1:
+                    if not self.assign_value(self.cells[i][j], self.cells[i][j].domain[0]):
+                        return False
+
+        return True
 
     def arc_constraints(self):
         target_cell = None
@@ -160,23 +162,28 @@ class board :
         for value in candidates:
             if self.is_valid(target_cell.row, target_cell.col, value):
                 print(f"{Colors.CYAN}[Backtracking]{Colors.RESET} Trying {value} at Cell[{target_cell.row}][{target_cell.col}]")
-                backup = copy.deepcopy(self.cells)
                 
+                backup = copy.deepcopy(self.cells)
+
                 if self.assign_value(target_cell, value):
                     if self.arc_constraints():
                         return True
-                
+
                 print(f"{Colors.RED}[Backtrack] Failed {value} at Cell[{target_cell.row}][{target_cell.col}] -> Reverting{Colors.RESET}")
-                
-                self.steps.append({
-                    'row': target_cell.row, 
-                    'col': target_cell.col, 
-                    'value': 0,
-                    'type': 'backtrack'
-                })
+
+                for r in range(9):
+                    for c in range(9):
+                        if self.cells[r][c].value != backup[r][c].value:
+                            self.steps.append({
+                                'row': r, 
+                                'col': c, 
+                                'value': backup[r][c].value,
+                                'type': 'backtrack'
+                            })
                 
                 self.cells = backup
             target_cell = self.cells[target_cell.row][target_cell.col]
+            
         return False
                                     
 def solve_puzzle(input_grid):
@@ -200,7 +207,9 @@ def solve_puzzle(input_grid):
                 row.append(game.cells[i][j].value)
             result.append(row)
         end_time = time.time()
+
         print(f"{Colors.GREEN}[Success] Puzzle Solved in {end_time - start_time:.6f} seconds{Colors.RESET}")
+
         return result, game.steps
     else:
         return None, []
