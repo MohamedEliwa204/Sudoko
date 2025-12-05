@@ -19,7 +19,7 @@
         <div class="board-container" id="board"></div>
 
         <div class="controls">
-            <input type="number" id="clues-count" class="difficulty-box" min="17" max="81" value="30" title="Number of filled cells">
+            <input type="number" id="clues-count" class="difficulty-box" min="0" max="81" value="30" title="Number of filled cells">
             <button onclick="fetchRandomBoard()" class="btn btn-success">Generate</button>
             <button onclick="solveSudoku()" class="btn btn-primary">Solve (AI)</button>
             <button onclick="clearBoard()" class="btn btn-secondary">Clear</button>
@@ -30,6 +30,7 @@
             <span id="step-counter" style="font-weight:bold; color:#2c3e50; margin: 0 10px;">0 / 0</span>
             <button onclick="nextStep()" class="btn btn-control" id="btn-next">Next ❯</button>
             <button onclick="playAll()" class="btn btn-control" style="background:#27ae60">Auto Play</button>
+            <button onclick="finalstep()" class="btn btn-control" id="btn-next">Final Solution</button>
         </div>
 
         <p id="status-msg" class="status"></p>
