@@ -207,7 +207,7 @@ async function fetchRandomBoard() {
     clearBoard();
     statusMsg.innerText = 'Generating...';
     let clues = document.getElementById('clues-count').value;
-    if (clues < 17) clues = 17;
+    if (clues < 0) clues = 0;
     if (clues > 81) clues = 81;
     document.getElementById('clues-count').value = clues;
 
@@ -245,6 +245,36 @@ function clearBoard() {
     playerControls.style.display = 'none';
     currentStepIndex = 0;
     solutionSteps = [];
+}
+function finalstep() {
+    const finalBoard = JSON.parse(JSON.stringify(initialGridState));
+    for (let i = 0; i < solutionSteps.length; i++) {
+        const step = solutionSteps[i];
+        finalBoard[step.row][step.col] = step.value;
+    }
+    const inputs = boardElement.querySelectorAll('input');
+    finalBoard.forEach((row, r) => {
+        row.forEach((val, c) => {
+            const index = r * 9 + c;
+            const input = inputs[index];
+            
+            if (val !== 0) {
+                input.value = val;
+                if (initialGridState[r][c] !== 0) {
+                    input.classList.add('user-input');
+                    input.classList.remove('solved-input');
+                } else {
+                    input.classList.add('solved-input');
+                    input.classList.remove('user-input');
+                }
+            } else {
+                input.value = '';
+                input.classList.remove('user-input', 'solved-input');
+            }
+        });
+    }); 
+    currentStepIndex = solutionSteps.length;
+    updateCounter();
 }
 
 createBoard();

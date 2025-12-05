@@ -1,6 +1,7 @@
 import cell
 import copy
 import random
+import time
 
 class Colors:
     CYAN = '\033[96m'
@@ -199,7 +200,7 @@ def solve_puzzle(input_grid):
                 row.append(game.cells[i][j].value)
             result.append(row)
         end_time = time.time()
-        print(f"{Colors.GREEN}[Success] Puzzle Solved in {end_time - start_time:.2f} seconds{Colors.RESET}")
+        print(f"{Colors.GREEN}[Success] Puzzle Solved in {end_time - start_time:.6f} seconds{Colors.RESET}")
         return result, game.steps
     else:
         return None, []
