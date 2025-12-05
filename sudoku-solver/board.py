@@ -1,6 +1,8 @@
 import cell
 import copy
 import random
+import time
+
 
 class Colors:
     CYAN = '\033[96m'
