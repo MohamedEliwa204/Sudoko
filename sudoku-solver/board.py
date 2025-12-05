@@ -122,6 +122,9 @@ class board :
         return True
 
     def assign_value(self,cell,value):
+        if not self.is_valid(cell.row, cell.col, value):
+            return False
+
         print(f"{Colors.GREEN}[Assignment]{Colors.RESET} Cell[{cell.row}][{cell.col}] assigned value: {value}")
         self.steps.append({
             'row': cell.row, 
@@ -157,27 +160,28 @@ class board :
 
         candidates = list(target_cell.domain)
         for value in candidates:
-            print(f"{Colors.CYAN}[Backtracking]{Colors.RESET} Trying {value} at Cell[{target_cell.row}][{target_cell.col}]")
-            
-            backup = copy.deepcopy(self.cells)
+            if self.is_valid(target_cell.row, target_cell.col, value):
+                print(f"{Colors.CYAN}[Backtracking]{Colors.RESET} Trying {value} at Cell[{target_cell.row}][{target_cell.col}]")
+                
+                backup = copy.deepcopy(self.cells)
 
-            if self.assign_value(target_cell, value):
-                if self.arc_constraints():
-                    return True
+                if self.assign_value(target_cell, value):
+                    if self.arc_constraints():
+                        return True
 
-            print(f"{Colors.RED}[Backtrack] Failed {value} at Cell[{target_cell.row}][{target_cell.col}] -> Reverting{Colors.RESET}")
+                print(f"{Colors.RED}[Backtrack] Failed {value} at Cell[{target_cell.row}][{target_cell.col}] -> Reverting{Colors.RESET}")
 
-            for r in range(9):
-                for c in range(9):
-                    if self.cells[r][c].value != backup[r][c].value:
-                        self.steps.append({
-                            'row': r, 
-                            'col': c, 
-                            'value': backup[r][c].value,
-                            'type': 'backtrack'
-                        })
-            
-            self.cells = backup
+                for r in range(9):
+                    for c in range(9):
+                        if self.cells[r][c].value != backup[r][c].value:
+                            self.steps.append({
+                                'row': r, 
+                                'col': c, 
+                                'value': backup[r][c].value,
+                                'type': 'backtrack'
+                            })
+                
+                self.cells = backup
             target_cell = self.cells[target_cell.row][target_cell.col]
             
         return False
