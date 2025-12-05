@@ -123,9 +123,6 @@ class board :
         return True
 
     def assign_value(self,cell,value):
-        if not self.is_valid(cell.row, cell.col, value):
-            return False
-        
         print(f"{Colors.GREEN}[Assignment]{Colors.RESET} Cell[{cell.row}][{cell.col}] assigned value: {value}")
         self.steps.append({
             'row': cell.row, 
@@ -135,15 +132,19 @@ class board :
         })
 
         self.set_value(cell,value)
-        for neighbor in self.neighbors(cell) : 
-            if neighbor.value == 0:
-                if neighbor.remove_value(value):
-                    if len(neighbor.domain) == 0 :
-                        return False 
-                    if len(neighbor.domain) == 1 :
-                        if not self.assign_value(neighbor,neighbor.domain[0]):
-                            return False
-        return True 
+
+        # After assigning a value, run AC-3 to enforce arc consistency across the entire board
+        if not self.ac3():
+            return False
+
+        # After AC-3, check if any cells have singleton domains and assign them
+        for i in range(9):
+            for j in range(9):
+                if self.cells[i][j].value == 0 and len(self.cells[i][j].domain) == 1:
+                    if not self.assign_value(self.cells[i][j], self.cells[i][j].domain[0]):
+                        return False
+
+        return True
 
     def arc_constraints(self):
         target_cell = None
@@ -159,24 +160,24 @@ class board :
 
         candidates = list(target_cell.domain)
         for value in candidates:
-            if self.is_valid(target_cell.row, target_cell.col, value):
-                print(f"{Colors.CYAN}[Backtracking]{Colors.RESET} Trying {value} at Cell[{target_cell.row}][{target_cell.col}]")
-                backup = copy.deepcopy(self.cells)
-                
-                if self.assign_value(target_cell, value):
-                    if self.arc_constraints():
-                        return True
-                
-                print(f"{Colors.RED}[Backtrack] Failed {value} at Cell[{target_cell.row}][{target_cell.col}] -> Reverting{Colors.RESET}")
-                
-                self.steps.append({
-                    'row': target_cell.row, 
-                    'col': target_cell.col, 
-                    'value': 0,
-                    'type': 'backtrack'
-                })
-                
-                self.cells = backup
+            print(f"{Colors.CYAN}[Backtracking]{Colors.RESET} Trying {value} at Cell[{target_cell.row}][{target_cell.col}]")
+            backup = copy.deepcopy(self.cells)
+
+            # assign_value now runs AC-3 internally
+            if self.assign_value(target_cell, value):
+                if self.arc_constraints():
+                    return True
+
+            print(f"{Colors.RED}[Backtrack] Failed {value} at Cell[{target_cell.row}][{target_cell.col}] -> Reverting{Colors.RESET}")
+
+            self.steps.append({
+                'row': target_cell.row,
+                'col': target_cell.col,
+                'value': 0,
+                'type': 'backtrack'
+            })
+
+            self.cells = backup
             target_cell = self.cells[target_cell.row][target_cell.col]
         return False
                                     
